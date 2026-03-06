@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Task Management</title>
+    <style>
+        body { font-family: sans-serif; background-color: #f4f7f6; padding: 20px; }
+        .container { max-width: 900px; margin: auto; background: white; padding: 20px; border-radius: 8px; box-shadow: 0 2px 5px rgba(0,0,0,0.1); }
+        table { width: 100%; border-collapse: collapse; margin-top: 20px; }
+        th, td { border: 1px solid #ddd; padding: 12px; text-align: left; }
+        th { background-color: #007bff; color: white; }
+        .btn { padding: 6px 12px; border: none; border-radius: 4px; cursor: pointer; text-decoration: none; color: white; font-size: 14px; }
+        .btn-add { background-color: #28a745; }
+        .btn-complete { background-color: #17a2b8; }
+        .btn-edit { background-color: #ffc107; color: black; }
+        .btn-delete { background-color: #dc3545; }
+    </style>
+</head>
+<body>
+<div class="container">
+    <h2>My Task List</h2>
+    <form th:action="@{/api/tasks/add}" method="post" style="margin-bottom: 20px;">
+        <input type="text" name="title" placeholder="Title" required>
+        <input type="text" name="description" placeholder="Description" required>
+        <button type="submit" class="btn btn-add">Add Task</button>
+    </form>
+    <table>
+        <thead>
+        <tr>
+            <th>Title</th>
+            <th>Description</th>
+            <th>Status</th>
+            <th>Actions</th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr th:each="t : ${tasks}">
+            <td th:text="${t.title}"></td>
+            <td th:text="${t.description}"></td>
+            <td th:text="${t.status}"></td>
+            <td>
+                <form th:if="${t.status == 'En cours'}" th:action="@{/api/tasks/complete/{id}(id=${t.id})}" method="post" style="display:inline;">
+                    <button type="submit" class="btn btn-complete">Complete</button>
+                </form>
+                <a th:href="@{/api/tasks/edit/{id}(id=${t.id})}" class="btn btn-edit">Edit</a>
+
+                <form th:action="@{/api/tasks/delete/{id}(id=${t.id})}" method="post" style="display:inline;">
+                    <button type="submit" class="btn btn-delete">Delete</button>
+                </form>
+            </td>
+        </tr>
+        </tbody>
+    </table>
+</div>
+</body>
+</html>
